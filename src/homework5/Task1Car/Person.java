@@ -5,27 +5,51 @@ public class Person {
     private static final int DEFAULT_WEIGHT = 5;
     private static final int MAX_FRIENDS_CAPACITY = 3;
 
-    String name;
-    long personalNumber;
-    int age;
-    int weight;
-    Person[] friends;
-    boolean isMale;
+    private String name;
+    private long personalNumber;
+    private int age;
+    private int weight;
+    private Person[] friends;
+    private boolean isMale;
 
-    Person() {
+    public Person() {
         age = DEFAULT_AGE;
         weight = DEFAULT_WEIGHT;
         friends = new Person[MAX_FRIENDS_CAPACITY];
     }
 
-    Person(String name, long personalNumber, boolean isMale) {
+    public Person(String name, long personalNumber, boolean isMale) {
         this();
         this.name = name;
         this.personalNumber = personalNumber;
         this.isMale = isMale;
     }
 
-    void addFriend(Person newFriend) {
+    public String getName() {
+        return name;
+    }
+
+    public boolean getIsMale() {
+        return isMale;
+    }
+
+    public void setAge(int age) {
+        if (age > 0) {
+            this.age = age;
+        } else {
+            System.out.println("Age should be greater than 0.");
+        }
+    }
+
+    public void setWeight(int weight) {
+        if (weight > 0) {
+            this.weight = weight;
+        } else {
+            System.out.println("Weight should be greater than 0.");
+        }
+    }
+
+    public void addFriend(Person newFriend) {
         boolean isAdded = false;
         for (int i = 0; i < MAX_FRIENDS_CAPACITY; i++) {
             if (friends[i] == null) {
@@ -52,7 +76,7 @@ public class Person {
         }
     }
 
-    void printFriendsInfo() {
+    public void printFriendsInfo() {
         for (int i = 0; i < MAX_FRIENDS_CAPACITY; i++) {
             Person friend = friends[i];
             if (friend == null) {
@@ -61,5 +85,13 @@ public class Person {
 
             System.out.println(friend.name + " - " + friend.age + " - " + (friend.isMale ? "male" : "female") + " - " + friend.weight + "kg");
         }
+    }
+
+    public void showPersonInfo() {
+        System.out.println(name + " - " + age + " - " + (isMale ? "male" : "female") + " - " + weight + "kg");
+    }
+
+    public void catchABus(Bus bus) {
+        bus.addPassenger(this);
     }
 }

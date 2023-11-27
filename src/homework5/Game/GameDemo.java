@@ -47,105 +47,81 @@ public class GameDemo {
         //    o	Неуспех за Hero при някоя от итерациите.
         // ---------------------------------------------------------
 
-        Hero harry = new Hero();
         Random rand = new Random();
         Scanner scanner = new Scanner(System.in);
 
-        boolean gameOverHeroDead = false;
+        Hero harry = new Hero();
+        Hero martin = new Hero("Martin", 100, rand.nextInt(Utils.MIN_STRENGTH_HERO_START, Utils.MAX_STRENGTH_HERO_START), 1, 0);
+        Hero strongerHero = harry.compareHero(martin);
 
-        int roundsOfEnemies = Utils.MAX_ROUNDS_OF_ENEMIES;
-        while (roundsOfEnemies > 0) {
-            int enemyHealth = rand.nextInt(Enemy.ENEMY_MIN_START_HEALTH, Enemy.ENEMY_MAX_START_HEALTH) * harry.level;
-            int enemyStrength = rand.nextInt(Enemy.ENEMY_MIN_START_STRENGTH, Enemy.ENEMY_MAX_START_STRENGTH);
-            int enemyLevel = rand.nextInt(Enemy.ENEMY_MIN_START_LEVEL, harry.level + 1);
+        Enemy dragon = new Enemy();
+        Enemy snake = new Enemy();
+        Enemy weakerEnemy = dragon.compareEnemy(snake);
+        weakerEnemy.displayEnemyStats();
 
-            Enemy enemy = new Enemy(enemyHealth, enemyStrength * (harry.strength * 0.1), enemyLevel);
-            harry.showStatsInfo();
-
-            System.out.println("Your enemy is: " + enemy.level + " level with " + enemy.health + " health and " + enemy.strength + " damage. Do you wish to fight or avoid it (type either fight or avoid)?: ");
-            String choiceToFight = scanner.nextLine().toLowerCase().trim();
+        boolean doesHeroWin = Utils.playGameUntilWin(strongerHero, weakerEnemy);
+        if (!doesHeroWin) {
+            System.out.println(strongerHero.getName() + " failed beating the enemies. GAME OVER!");
+        } else {
+            System.out.println("\nDo you want to continue the game?(yes/no): ");
+            String continueGame = scanner.nextLine().toLowerCase().trim();
 
             while (true) {
-                if (choiceToFight.equals("fight") || choiceToFight.equals("avoid")) {
+                if (continueGame.equals("yes") || continueGame.equals("no")) {
                     break;
                 }
 
-                System.out.println("Please type either 'fight' or 'avoid': ");
-                choiceToFight = scanner.nextLine().toLowerCase().trim();
+                System.out.println("Please type either 'yes' or 'no': ");
+                continueGame = scanner.nextLine().toLowerCase().trim();
             }
 
-            if (choiceToFight.equals("avoid")) {
-                harry.avoid();
-                roundsOfEnemies--;
-
-                continue;
-            }
-
-            String firstTurn = Utils.tossCoin();
-            if (firstTurn.equals("heads")) {
-                // hero's first turn
-                while (true) {
-                    double baseStrengthHero = harry.strength;
-                    double baseStrengthEnemy = enemy.strength;
-
-                    Utils.calculateCriticalHitsOfFight(harry, enemy);
-
-                    if (harry.currentHealth == Utils.ENTITY_NO_HEALTH) {
-                        gameOverHeroDead = true;
-                        break;
-                    }
-
-                    if (enemy.health == Utils.ENTITY_NO_HEALTH) {
-                        harry.strength = baseStrengthHero;
-                        Utils.defeatedEnemySuccess(harry, enemy);
-
-                        break;
-                    }
-
-                    harry.attack(enemy);
-                    enemy.attack(harry);
-
-                    harry.strength = baseStrengthHero;
-                    enemy.strength = baseStrengthEnemy;
-                }
+            if (continueGame.equals("no")) {
+                System.out.println("Good game!");
             } else {
-                // enemy's first turn
-                while (true) {
-                    double baseStrengthHero = harry.strength;
-                    double baseStrengthEnemy = enemy.strength;
+                int roundsOfEnemies = Utils.MAX_ROUNDS_OF_ENEMIES;
+                while (roundsOfEnemies > 0) {
+                    int enemyHealth = rand.nextInt(Enemy.ENEMY_MIN_START_HEALTH, Enemy.ENEMY_MAX_START_HEALTH) * strongerHero.getLevel();
+                    int enemyStrength = rand.nextInt(Enemy.ENEMY_MIN_START_STRENGTH, Enemy.ENEMY_MAX_START_STRENGTH);
+                    int enemyLevel = rand.nextInt(Enemy.ENEMY_MIN_START_LEVEL, strongerHero.getLevel() + 1);
 
-                    Utils.calculateCriticalHitsOfFight(harry, enemy);
+                    Enemy enemyInDungeon = new Enemy(enemyHealth, enemyStrength * (strongerHero.getStrength() * 0.1), enemyLevel);
+                    strongerHero.displayHeroStats();
 
-                    if (harry.currentHealth == Utils.ENTITY_NO_HEALTH) {
-                        gameOverHeroDead = true;
+                    System.out.println("\nEnemy stats: ");
+                    enemyInDungeon.displayEnemyStats();
+                    System.out.println("Do you wish to fight or avoid it (type either fight or avoid)?: ");
+                    String choiceToFight = scanner.nextLine().toLowerCase().trim();
+
+                    while (true) {
+                        if (choiceToFight.equals("fight") || choiceToFight.equals("avoid")) {
+                            break;
+                        }
+
+                        System.out.println("Please type either 'fight' or 'avoid': ");
+                        choiceToFight = scanner.nextLine().toLowerCase().trim();
+                    }
+
+                    if (choiceToFight.equals("avoid")) {
+                        strongerHero.avoid();
+                        roundsOfEnemies--;
+
+                        continue;
+                    }
+
+                    doesHeroWin = Utils.playGameUntilWin(strongerHero, enemyInDungeon);
+
+                    if (!doesHeroWin) {
+                        System.out.println(strongerHero.getName() + " failed beating the enemies. GAME OVER!");
                         break;
                     }
 
-                    if (enemy.health == Utils.ENTITY_NO_HEALTH) {
-                        harry.strength = baseStrengthHero;
-                        Utils.defeatedEnemySuccess(harry, enemy);
+                    roundsOfEnemies--;
+                }
 
-                        break;
-                    }
-
-                    enemy.attack(harry);
-                    harry.attack(enemy);
-
-                    harry.strength = baseStrengthHero;
-                    enemy.strength = baseStrengthEnemy;
+                if (roundsOfEnemies == 0) {
+                    System.out.println("Congratulations! You have beaten all the monsters!");
                 }
             }
-
-            if (gameOverHeroDead) {
-                System.out.println(harry.name + " failed beating the enemies. GAME OVER!");
-                break;
-            }
-
-            roundsOfEnemies--;
-        }
-
-        if (roundsOfEnemies == 0) {
-            System.out.println("Congratulations! You have beaten all the monsters!");
         }
     }
 }

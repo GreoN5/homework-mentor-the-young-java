@@ -1,6 +1,7 @@
 package homework5.Task1Car;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class CarDemo {
     public static void main(String[] args) {
@@ -36,25 +37,25 @@ public class CarDemo {
 
         Car vw = new Car("Golf", "Diesel", "black", 240, 5000);
         Person vwOwner = new Person("Ivaylo", 123456789, true);
-        vwOwner.age = 18;
-        vwOwner.weight = 75;
+        vwOwner.setAge(18);
+        vwOwner.setWeight(75);
         vw.assignOwner(vwOwner);
 
         Person jivko = new Person("Jivko", 1012131415, true);
-        jivko.age = 25;
-        jivko.weight = 73;
+        jivko.setAge(25);
+        jivko.setWeight(73);
 
         Person pavleta = new Person("Pavleta", 1112131415, false);
-        pavleta.age = 16;
-        pavleta.weight = 53;
+        pavleta.setAge(16);
+        pavleta.setWeight(53);
 
         Person ivan = new Person("Ivan", 1213141516, true);
-        ivan.age = 21;
-        ivan.weight = 82;
+        ivan.setAge(21);
+        ivan.setWeight(82);
 
         Person mihaela = new Person("Mihaela", 1314151617, true);
-        mihaela.age = 22;
-        mihaela.weight = 48;
+        mihaela.setAge(22);
+        mihaela.setWeight(48);
 
         vwOwner.addFriend(jivko);
         vwOwner.addFriend(pavleta);
@@ -71,7 +72,7 @@ public class CarDemo {
         jivko.printFriendsInfo();
 
         Car audi = new Car("A4", "Petrol", "red", 260, 12000);
-        audi.assignOwner(ivan);
+//        audi.assignOwner(ivan);
 
         vw.accelerate();
         vw.accelerate();
@@ -103,5 +104,22 @@ public class CarDemo {
 
         audi.changeColor("white");
         System.out.println(audi.calculatePriceForScrap(5));
+
+        CarOwner ivanOwner = new CarOwner("Ivan", 1234567891, true);
+        ivanOwner.buyCar(vw);
+        ivanOwner.driveCar();
+
+        CarOwner dimitarOwner = new CarOwner("Ivan", 1234567891, true);
+        CarSeller seller = new CarSeller("Teodor", 2134567891, true);
+        seller.setCarForSale(audi);
+        seller.showCar();
+        seller.sellCar(seller.getCarForSale(), dimitarOwner);
+
+        Bus schoolBus = new Bus("Siemens", "diesel", "white", 160, 5000000, 8, 10);
+        schoolBus.addPassenger(jivko);
+        schoolBus.addPassenger(mihaela);
+        schoolBus.addPassenger(pavleta);
+
+        ivan.catchABus(schoolBus);
     }
 }
