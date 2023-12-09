@@ -1,6 +1,7 @@
 package homework9;
 
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Task1 {
     private static final int ZERO = 0;
@@ -15,8 +16,10 @@ public class Task1 {
         //    •	Методът да връща като резултат нов масив, като всеки елемент от новополученият масив е равен на съответният елемент от първия масив,
         //    разделен на съответващият му елемент от втория масив.
         //    •	Чрез обработка на подходящ Exception, да се записва 0 в новия масив, ако елемента на който се дели е 0
-        //    •	Да се вземе в предвид дали двата масива подадени като параметри са с различна дължина, ако са с различна полученият масив да е с дължината на по-късият
-        //    •	Метода да е направен по такъв начин, че в никакъв случай да не се стига до Exception, тоест искаме всички Exception-и, които евентуално могат да възникнат да бъдат обработени –
+        //    •	Да се вземе в предвид дали двата масива подадени като параметри са с различна дължина,
+        //    ако са с различна полученият масив да е с дължината на по-късият
+        //    •	Метода да е направен по такъв начин, че в никакъв случай да не се стига до Exception, тоест искаме всички
+        //    Exception-и, които евентуално могат да възникнат да бъдат обработени –
         //    Тук, искаме да използваме Exception-и, а не if-else statement!
         //    •	Да се направи и main метод, където да се демонстрира използването на метода divideArrays
         //
@@ -28,29 +31,37 @@ public class Task1 {
         // ---------------------------------------------------------
 
         int[] array = new int[] { 8, 3, 10, 24, 0, 4, 7, 14 };
-        int[] arrayToDivide = new int[] { 4, 0, 5, 3, 9, 4 };
+        int[] arrayToDivide = new int[] { 4, 0, -5 };
 
         int[] resultArr = divideArrays(array, arrayToDivide);
         System.out.println(Arrays.toString(resultArr));
     }
 
     private static int[] divideArrays(int[] array, int[] arrayToDivide) {
-        int[] newArr = new int[array.length];
-        int index = ZERO;
+        try {
+            int[] newArr = new int[array.length];
+            int index = ZERO;
 
-        while (index < newArr.length) {
-            try {
-                newArr[index] = array[index] / arrayToDivide[index];
-                index++;
-            } catch (ArithmeticException e) {
-                newArr[index] = ZERO;
-                index++;
-            } catch (IndexOutOfBoundsException e) {
-                newArr = Arrays.copyOf(newArr, index);
-                break;
+            while (index < newArr.length) {
+                try {
+                    newArr[index] = array[index] / arrayToDivide[index];
+                    index++;
+                } catch (ArithmeticException e) {
+                    newArr[index] = ZERO;
+                    index++;
+                } catch (IndexOutOfBoundsException e) {
+                    newArr = Arrays.copyOf(newArr, index);
+                    break;
+                }
             }
+
+            return newArr;
+        } catch (NullPointerException exception) {
+            System.out.println("Provided array was null.");
+        } catch (RuntimeException exception) {
+            System.out.println("There was unknown error. - " + exception.getMessage());
         }
 
-        return newArr;
+        return new int[0];
     }
 }
